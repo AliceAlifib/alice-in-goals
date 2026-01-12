@@ -58,9 +58,10 @@ defmodule AliceInGoals.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
-      {:bandit, "~> 1.5"}, # Added missing comma here
+      # Added missing comma here
+      {:bandit, "~> 1.5"},
       {:ueberauth, "~> 0.10"},
-      {:ueberauth_google, "~> 0.12"},
+      {:ueberauth_google, "~> 0.12"}
     ]
   end
 
