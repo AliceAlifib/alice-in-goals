@@ -10,16 +10,16 @@ A wrapper app for the simple-bldg-server that handles user authentication, onboa
 - [x] Generate Phoenix app "alice_in_goals" with SQLite
 - [x] Add OAuth dependencies (ueberauth, ueberauth_google)
 - [x] Create plan.md and start server
-- [ ] Replace default home page with static design mockup (building theme)
-- [ ] Configure Ueberauth for Google OAuth
+- [x] Replace default home page with static design mockup (building theme)
+- [x] Configure Ueberauth for Google OAuth
   - Add config to config/config.exs
   - Add runtime config to config/runtime.exs for Google credentials
   - Create .env.example with placeholder credentials
-- [ ] Create Accounts context and User schema
+- [x] Create Accounts context and User schema
   - Migration: users table with email, name, google_id, goals (array), tools (map), onboarding_completed
   - Schema: AliceInGoals.Accounts.User
   - Functions: find_or_create_from_google/1, mark_onboarding_complete/2, update_goals/2, update_tools/2
-- [ ] Create AuthController for OAuth flow
+- [x] Create AuthController for OAuth flow
   - GET /auth/google - redirect to Google OAuth
   - GET /auth/google/callback - handle OAuth callback
   - DELETE /auth/logout - logout user
