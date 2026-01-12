@@ -20,6 +20,15 @@ defmodule AliceInGoalsWeb.Router do
     get "/", PageController, :home
   end
 
+  # OAuth routes
+  scope "/auth", AliceInGoalsWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :logout
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AliceInGoalsWeb do
   #   pipe_through :api
