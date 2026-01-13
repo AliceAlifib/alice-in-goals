@@ -1,8 +1,17 @@
 import Config
 
-# Load .env file before reading any config
+# Load .env file if it exists
 if File.exists?(".env") do
-  Dotenvy.source!([".env", System.get_env()])
+  for line <- File.stream!(".env") do
+    line = String.trim(line)
+
+    unless String.starts_with?(line, "#") or line == "" do
+      case String.split(line, "=", parts: 2) do
+        [key, value] -> System.put_env(key, value)
+        _ -> :ok
+      end
+    end
+  end
 end
 
 # Configure Ueberauth for Google OAuth
