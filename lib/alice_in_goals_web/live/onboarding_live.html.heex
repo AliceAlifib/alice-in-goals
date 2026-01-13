@@ -11,35 +11,38 @@
                 @current_step >= step && "bg-blue-600 text-white",
                 @current_step < step && "bg-slate-200 text-slate-500"
               ]}>
-                <%= step %>
+                {step}
               </div>
-              <div :if={step < 3} class={[
-                "flex-1 h-1 mx-2 transition-all",
-                @current_step > step && "bg-blue-600",
-                @current_step <= step && "bg-slate-200"
-              ]}>
+              <div
+                :if={step < 3}
+                class={[
+                  "flex-1 h-1 mx-2 transition-all",
+                  @current_step > step && "bg-blue-600",
+                  @current_step <= step && "bg-slate-200"
+                ]}
+              >
               </div>
             </div>
             <div class="absolute top-12 left-0 text-xs text-slate-600 font-medium whitespace-nowrap">
-              <%= step_title(step) %>
+              {step_title(step)}
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Step Content Card -->
+      
+<!-- Step Content Card -->
       <div class="bg-white rounded-2xl shadow-lg border-2 border-slate-100 p-8">
         <!-- Step Header -->
         <div class="mb-8">
           <h2 class="text-3xl font-bold text-slate-900 mb-2">
-            <%= step_title(@current_step) %>
+            {step_title(@current_step)}
           </h2>
           <p class="text-slate-600">
-            <%= step_subtitle(@current_step) %>
+            {step_subtitle(@current_step)}
           </p>
         </div>
-
-        <!-- Step 1: Life Goals -->
+        
+<!-- Step 1: Life Goals -->
         <div :if={@current_step == 1} class="space-y-6">
           <!-- Suggested Categories -->
           <div class="bg-blue-50 border-2 border-blue-100 rounded-lg p-6">
@@ -53,8 +56,8 @@
               <div>• Fulfillment (purpose & meaning)</div>
             </div>
           </div>
-
-          <!-- Goal Inputs -->
+          
+<!-- Goal Inputs -->
           <div class="space-y-4">
             <div :for={{goal, index} <- Enum.with_index(@goals)} class="flex gap-2">
               <input
@@ -82,37 +85,50 @@
           >
             + Add Another Goal
           </button>
-
-          <!-- Error Message -->
+          
+<!-- Error Message -->
           <div :if={Map.get(@errors, :goals)} class="text-red-600 text-sm font-medium">
-            <%= Map.get(@errors, :goals) %>
+            {Map.get(@errors, :goals)}
           </div>
         </div>
-
-        <!-- Step 2: Tools -->
+        
+<!-- Step 2: Tools -->
         <div :if={@current_step == 2} class="space-y-6">
           <p class="text-slate-600 mb-6">
             Optional: Connect your existing productivity tools and methods. You can skip this step and add them later.
           </p>
 
           <div class="space-y-4">
-            <div :for={category <- ["Tasks", "Decisions", "Events", "Metrics", "Journaling", "Projects", "Other"]} class="space-y-2">
+            <div
+              :for={
+                category <- [
+                  "Tasks",
+                  "Decisions",
+                  "Events",
+                  "Metrics",
+                  "Journaling",
+                  "Projects",
+                  "Other"
+                ]
+              }
+              class="space-y-2"
+            >
               <label class="block text-sm font-semibold text-slate-700">
-                <%= category %>
+                {category}
               </label>
               <input
                 type="text"
                 value={Map.get(@tools, category, "")}
                 phx-blur="update_tool"
                 phx-value-category={category}
-                placeholder={"e.g., Todoist, Notion, Google Calendar..."}
+                placeholder="e.g., Todoist, Notion, Google Calendar..."
                 class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-slate-900 placeholder:text-slate-400"
               />
             </div>
           </div>
         </div>
-
-        <!-- Step 3: Review -->
+        
+<!-- Step 3: Review -->
         <div :if={@current_step == 3} class="space-y-6">
           <!-- Goals Summary -->
           <div class="bg-slate-50 rounded-lg p-6 border-2 border-slate-100">
@@ -129,12 +145,12 @@
             <ul class="space-y-2">
               <li :for={goal <- Enum.reject(@goals, &(&1 == ""))} class="flex items-start gap-2">
                 <span class="text-blue-600 mt-1">✓</span>
-                <span class="text-slate-700"><%= goal %></span>
+                <span class="text-slate-700">{goal}</span>
               </li>
             </ul>
           </div>
-
-          <!-- Tools Summary -->
+          
+<!-- Tools Summary -->
           <div class="bg-slate-50 rounded-lg p-6 border-2 border-slate-100">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-bold text-slate-900">Your Tools</h3>
@@ -148,22 +164,37 @@
             </div>
             <%= if Enum.any?(@tools, fn {_k, v} -> v != "" end) do %>
               <div class="space-y-2">
-                <div :for={{category, tool} <- @tools, tool != ""} class="flex items-start gap-2">
-                  <span class="text-xs font-semibold text-slate-500 uppercase w-24"><%= category %></span>
-                  <span class="text-slate-700"><%= tool %></span>
+                <div
+                  :for={{category, tool} <- Enum.filter(@tools, fn {_k, v} -> v != "" end)}
+                  class="flex items-start gap-2"
+                >
+                  <span class="text-xs font-semibold text-slate-500 uppercase w-24">
+                    {category}
+                  </span>
+                  <span class="text-slate-700">{tool}</span>
                 </div>
               </div>
             <% else %>
               <p class="text-slate-500 text-sm italic">No tools configured yet</p>
             <% end %>
           </div>
-
-          <!-- Completion Message -->
+          
+<!-- Completion Message -->
           <div class="bg-blue-50 border-2 border-blue-100 rounded-lg p-6">
             <div class="flex items-start gap-4">
               <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
                 </svg>
               </div>
               <div>
@@ -176,8 +207,8 @@
             </div>
           </div>
         </div>
-
-        <!-- Navigation Buttons -->
+        
+<!-- Navigation Buttons -->
         <div class="flex items-center justify-between mt-8 pt-6 border-t-2 border-slate-100">
           <button
             :if={@current_step > 1}
@@ -205,8 +236,8 @@
           </button>
         </div>
       </div>
-
-      <!-- Blueprint Pattern Footer -->
+      
+<!-- Blueprint Pattern Footer -->
       <div class="mt-8 text-center">
         <p class="text-sm text-slate-500">
           Building your future, one step at a time
@@ -215,4 +246,3 @@
     </div>
   </div>
 </Layouts.app>
-
