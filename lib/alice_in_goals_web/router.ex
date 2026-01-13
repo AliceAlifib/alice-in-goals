@@ -20,6 +20,7 @@ defmodule AliceInGoalsWeb.Router do
     get "/", PageController, :home
 
     live "/onboarding", OnboardingLive
+    live "/dashboard", DashboardLive
   end
 
   # OAuth routes
