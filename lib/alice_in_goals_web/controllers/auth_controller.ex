@@ -9,7 +9,6 @@ defmodule AliceInGoalsWeb.AuthController do
   """
   def request(conn, _params) do
     # Ueberauth handles the redirect
-    name = user_info["name"] || user.name || "there"
     conn
   end
 
@@ -33,8 +32,6 @@ defmodule AliceInGoalsWeb.AuthController do
         |> redirect_after_login(user)
 
       {:error, _changeset} ->
-        name = user_info["name"] || user.name || "there"
-
         conn
         |> put_flash(:error, "Failed to authenticate. Please try again.")
         |> redirect(to: "/")
@@ -42,8 +39,6 @@ defmodule AliceInGoalsWeb.AuthController do
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
-    name = user_info["name"] || user.name || "there"
-
     conn
     |> put_flash(:error, "Failed to authenticate with Google.")
     |> redirect(to: "/")
