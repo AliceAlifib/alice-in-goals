@@ -37,33 +37,60 @@
         </ul>
       </div>
       
-<!-- Unity WebGL Placeholder -->
+<!-- Unity WebGL Client (iframe embed) -->
       <div class="bg-white rounded-2xl shadow-lg border-2 border-slate-100 p-8">
-        <h2 class="text-2xl font-bold text-slate-900 mb-4">Your 3D Office</h2>
-        <div class="bg-gradient-to-br from-slate-100 to-blue-50 rounded-lg p-12 flex items-center justify-center min-h-[500px] border-2 border-dashed border-slate-300">
-          <div class="text-center">
-            <div class="w-24 h-24 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg
-                class="w-12 h-12 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-slate-900">Your 3D Office</h2>
+          <button
+            phx-click="toggle_fullscreen"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+          >
+            Toggle Fullscreen
+          </button>
+        </div>
+
+        <div class="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-slate-200">
+          <!-- Unity iframe -->
+          <iframe
+            id="unity-frame"
+            src="https://alicein-web-client.fly.dev/"
+            class="w-full"
+            style="height: 600px; min-height: 600px;"
+            frameborder="0"
+            allow="autoplay; fullscreen; microphone; camera"
+            allowfullscreen
+          >
+          </iframe>
+          
+<!-- Loading overlay (optional) -->
+          <div
+            id="unity-loading-overlay"
+            class="absolute inset-0 bg-slate-900 flex items-center justify-center"
+            style="display: none;"
+          >
+            <div class="text-center">
+              <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4">
+              </div>
+              <p class="text-white text-lg font-medium">Loading your office...</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 mb-2">Unity WebGL Client</h3>
-            <p class="text-slate-600 max-w-md mx-auto">
-              Your interactive 3D office will load here. This space will visualize your goals and provide an immersive environment to track your progress.
-            </p>
-            <p class="text-sm text-slate-500 mt-4">
-              (Unity WebGL integration coming soon)
-            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Live Unity WebGL Client</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            <span>Hosted on Fly.io</span>
           </div>
         </div>
       </div>
