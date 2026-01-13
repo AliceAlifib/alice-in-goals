@@ -1,5 +1,10 @@
 import Config
 
+# Load .env file before reading any config
+if File.exists?(".env") do
+  Dotenvy.source!([".env", System.get_env()])
+end
+
 # Configure Ueberauth for Google OAuth
 config :ueberauth, Ueberauth,
   providers: [
