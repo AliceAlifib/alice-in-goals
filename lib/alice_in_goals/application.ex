@@ -8,7 +8,9 @@ defmodule AliceInGoals.Application do
   @impl true
   def start(_type, _args) do
     # Load .env file if it exists (development/test environments)
-    Dotenvy.source([".env", System.get_env()])
+    if File.exists?(".env") do
+      Dotenvy.source!([".env", System.get_env()])
+    end
 
     children = [
       AliceInGoalsWeb.Telemetry,
