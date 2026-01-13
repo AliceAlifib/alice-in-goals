@@ -60,7 +60,7 @@ defmodule AliceInGoals.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       # Added missing comma here
       {:bandit, "~> 1.5"},
-      {:dotenvy, "~> 0.8"}
+      {:dotenvy, "~> 0.8"},
       {:ueberauth, "~> 0.10"},
       {:ueberauth_google, "~> 0.12"}
     ]
