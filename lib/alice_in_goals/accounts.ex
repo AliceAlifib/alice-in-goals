@@ -27,6 +27,15 @@ defmodule AliceInGoals.Accounts do
         |> Repo.insert()
 
       user ->
+        # Update name if it's missing
+        if is_nil(user.name) or user.name == "" do
+          user
+          |> User.changeset(%{name: name})
+          |> Repo.update()
+        else
+          {:ok, user}
+        end
+
         {:ok, user}
     end
   end
