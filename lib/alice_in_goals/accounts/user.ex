@@ -20,7 +20,17 @@ defmodule AliceInGoals.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :name, :google_id, :goals, :tools, :onboarding_completed])
+    |> cast(attrs, [
+      :email,
+      :name,
+      :google_id,
+      :goals,
+      :tools,
+      :onboarding_completed,
+      :resident_id,
+      :home_bldg_address,
+      :avatar
+    ])
     |> validate_required([:email, :google_id])
     |> unique_constraint(:email)
     |> unique_constraint(:google_id)
