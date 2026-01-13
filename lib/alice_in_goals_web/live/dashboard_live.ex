@@ -17,6 +17,11 @@ defmodule AliceInGoalsWeb.DashboardLive do
          |> assign(:user, user)
          |> assign(:page_title, "Your Office")}
       end
+
+      @impl true
+      def handle_event("toggle_fullscreen", _params, socket) do
+        {:noreply, push_event(socket, "toggle_fullscreen", %{})}
+      end
     else
       {:ok, push_navigate(socket, to: ~p"/")}
     end
