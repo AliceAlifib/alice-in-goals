@@ -23,13 +23,16 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
+import FullscreenHook from "./fullscreen_hook";
 
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 
 // Initialize empty hooks object for colocated hooks
-const colocatedHooks = {};
+const colocatedHooks = {
+  FullscreenHook: FullscreenHook,
+};
 
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
