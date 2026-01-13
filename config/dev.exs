@@ -1,10 +1,5 @@
 import Config
 
-# Load .env file if it exists (development only)
-if File.exists?(".env") do
-  Dotenvy.source!([".env", System.get_env()])
-end
-
 
 # Configure your database
 config :alice_in_goals, AliceInGoals.Repo,
