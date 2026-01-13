@@ -38,7 +38,11 @@
       </div>
       
 <!-- Unity WebGL Client (iframe embed) -->
-      <div class="bg-white rounded-2xl shadow-lg border-2 border-slate-100 p-8">
+      <div
+        class="bg-white rounded-2xl shadow-lg border-2 border-slate-100 p-8"
+        phx-hook="FullscreenHook"
+        id="unity-container"
+      >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-slate-900">Your 3D Office</h2>
           <button
