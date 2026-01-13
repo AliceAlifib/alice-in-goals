@@ -53,8 +53,6 @@ defmodule AliceInGoalsWeb.AuthController do
   Logs out the user.
   """
   def logout(conn, _params) do
-    name = user_info["name"] || user.name || "there"
-
     conn
     |> configure_session(drop: true)
     |> put_flash(:info, "You have been logged out.")
