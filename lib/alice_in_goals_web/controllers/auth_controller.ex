@@ -9,6 +9,7 @@ defmodule AliceInGoalsWeb.AuthController do
   """
   def request(conn, _params) do
     # Ueberauth handles the redirect
+    name = user_info["name"] || user.name || "there"
     conn
   end
 
@@ -24,12 +25,16 @@ defmodule AliceInGoalsWeb.AuthController do
 
     case Accounts.find_or_create_from_google(user_info) do
       {:ok, user} ->
+        name = user_info["name"] || user.name || "there"
+
         conn
-        |> put_flash(:info, "Welcome, #{user.name}!")
+        |> put_flash(:info, "Welcome, #{name}!")
         |> put_session(:user_id, user.id)
         |> redirect_after_login(user)
 
       {:error, _changeset} ->
+        name = user_info["name"] || user.name || "there"
+
         conn
         |> put_flash(:error, "Failed to authenticate. Please try again.")
         |> redirect(to: "/")
@@ -37,6 +42,8 @@ defmodule AliceInGoalsWeb.AuthController do
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
+    name = user_info["name"] || user.name || "there"
+
     conn
     |> put_flash(:error, "Failed to authenticate with Google.")
     |> redirect(to: "/")
@@ -46,6 +53,8 @@ defmodule AliceInGoalsWeb.AuthController do
   Logs out the user.
   """
   def logout(conn, _params) do
+    name = user_info["name"] || user.name || "there"
+
     conn
     |> configure_session(drop: true)
     |> put_flash(:info, "You have been logged out.")
