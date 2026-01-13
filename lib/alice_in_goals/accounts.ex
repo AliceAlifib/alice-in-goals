@@ -6,6 +6,8 @@ defmodule AliceInGoals.Accounts do
   import Ecto.Query, warn: false
   alias AliceInGoals.Repo
   alias AliceInGoals.Accounts.User
+  alias AliceInGoals.BldgServerClient
+  require Logger
 
   @doc """
   Finds or creates a user from Google OAuth data.
@@ -25,6 +27,28 @@ defmodule AliceInGoals.Accounts do
           onboarding_completed: false
         })
         |> Repo.insert()
+        |> case do
+          {:ok, user} ->
+            # Provision user on bldg-server
+            case BldgServerClient.provision_user(user) do
+              {:ok, %{resident_id: resident_id, home_bldg_address: home_bldg_address}} ->
+                # Update user with bldg-server IDs
+                user
+                |> Ecto.Changeset.change(%{
+                  resident_id: resident_id,
+                  home_bldg_address: home_bldg_address
+                })
+                |> Repo.update()
+
+              {:error, reason} ->
+                # Log error but still return user
+                Logger.error("Failed to provision user on bldg-server: #{inspect(reason)}")
+                {:ok, user}
+            end
+
+          error ->
+            error
+        end
 
       user ->
         # Update name if it's missing
@@ -35,8 +59,6 @@ defmodule AliceInGoals.Accounts do
         else
           {:ok, user}
         end
-
-        {:ok, user}
     end
   end
 
