@@ -23,6 +23,7 @@ config :ueberauth, Ueberauth,
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+  redirect_uri: "http://localhost:4000/auth/google/callback"
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
