@@ -27,10 +27,10 @@ defmodule AliceInGoalsWeb.Router do
   scope "/auth", AliceInGoalsWeb do
     pipe_through :browser
 
+    get "/logout", AuthController, :logout
+    delete "/logout", AuthController, :logout
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
-    delete "/logout", AuthController, :logout
-    get "/logout", AuthController, :logout
   end
 
   # Other scopes may use custom stacks.
