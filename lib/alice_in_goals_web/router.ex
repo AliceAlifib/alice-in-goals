@@ -17,6 +17,8 @@ defmodule AliceInGoalsWeb.Router do
   scope "/", AliceInGoalsWeb do
     pipe_through :browser
 
+    get "/", PageController, :home
+
     live "/onboarding", OnboardingLive
   end
 
