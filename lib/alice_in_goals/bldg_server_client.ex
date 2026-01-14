@@ -33,6 +33,7 @@ defmodule AliceInGoals.BldgServerClient do
       "name" => username,
       "entity_type" => "ground",
       "flr" => "g",
+      "flr_url" => "g",
       "state" => nil,
       "summary" => user.name || username,
       "web_url" => nil,
