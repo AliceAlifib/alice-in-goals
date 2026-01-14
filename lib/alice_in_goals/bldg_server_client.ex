@@ -30,8 +30,6 @@ defmodule AliceInGoals.BldgServerClient do
     username = generate_username(user)
 
     payload = %{
-    username = generate_username(user)
-
       "name" => username,
       "entity_type" => "ground",
       "flr" => "g",
@@ -41,7 +39,7 @@ defmodule AliceInGoals.BldgServerClient do
       "web_url" => nil,
       "picture_url" => nil,
       "data" => "{\"flr_height\": \"1.08\", \"flr0_height\": \"0.01\"}",
-      "owners" => [user.email]
+      "owners" => [user.email],
       "bldg_url" => "g/#{username}",
       "is_composite" => true
     }
