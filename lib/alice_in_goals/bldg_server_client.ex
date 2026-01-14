@@ -1,7 +1,7 @@
 defmodule AliceInGoals.BldgServerClient do
   @moduledoc """
   Client for interacting with the bldg-server API.
-  Handles provisioning residents and their home buildings.
+  Handles provisioning of users and their home buildings.
   """
 
   require Logger
@@ -9,55 +9,43 @@ defmodule AliceInGoals.BldgServerClient do
   @base_url "https://bldg-server.fly.dev"
 
   @doc """
-  Provisions a new user on the bldg-server by:
-  1. Creating their home building
-  2. Creating their resident record
-
-  Returns `{:ok, %{resident_id: ..., home_bldg_address: ...}}` on success.
-  Returns `{:error, reason}` on failure.
+  Provisions a new user on the bldg-server by creating their home building and resident profile.
+  Returns {:ok, %{resident_id: id, home_bldg_address: address}} on success.
   """
   def provision_user(user) do
-    with {:ok, home_bldg_response} <- create_home_bldg(user),
-         home_bldg_address <- Map.get(home_bldg_response, "address"),
-         {:ok, resident_response} <- create_resident(user, home_bldg_address) do
-      {:ok,
-       %{
-         resident_id: Map.get(resident_response, "id"),
-         home_bldg_address: home_bldg_address,
-         home_bldg_response: home_bldg_response,
-         resident_response: resident_response
-       }}
+    with {:ok, home_bldg} <- create_home_bldg(user),
+         {:ok, resident} <- create_resident(user, home_bldg) do
+      {:ok, %{resident_id: resident["id"], home_bldg_address: home_bldg["address"]}}
     else
-      {:error, reason} = error ->
+      {:error, reason} ->
         Logger.error("Failed to provision user #{user.id} on bldg-server: #{inspect(reason)}")
-        error
+        {:error, reason}
     end
   end
 
   @doc """
-  Creates a home building for the user on bldg-server.
-
-  POST /v1/bldgs/build
+  Creates a home building for the user on the bldg-server.
   """
   def create_home_bldg(user) do
     username = generate_username(user)
 
     payload = %{
-      "container_web_url" => "https://alice-in-goals.app",
-      "web_url" => "https://alice-in-goals.app/#{username}",
       "name" => username,
       "entity_type" => "ground",
+      "flr" => "g",
       "state" => "approved",
-      "summary" => user.name || user.email,
-      "picture_url" => user.avatar || ""
+      "summary" => user.name || username,
+      "web_url" => "https://alice-in-goals.app/#{username}",
+      "picture_url" => user.avatar || "",
+      "owners" => [user.email]
     }
 
-    Logger.debug("BldgServer create_home_bldg payload: #{inspect(payload, pretty: true)}")
-    Logger.info("Creating home_bldg for user #{user.id} with username: #{username}")
+    Logger.debug("BldgServer API Request - POST /v1/bldgs/build")
+    Logger.debug("Payload: #{inspect(payload, pretty: true)}")
 
     case Req.post("#{@base_url}/v1/bldgs/build", json: payload) do
-      {:ok, %{status: status, body: body}} when status in 200..299 ->
-        Logger.info("Successfully created home_bldg for user #{user.id}: #{inspect(body)}")
+      {:ok, %{status: 200, body: body}} ->
+        Logger.debug("BldgServer API Response - Success: #{inspect(body, pretty: true)}")
         {:ok, body}
 
       {:ok, %{status: status, body: body}} ->
@@ -67,43 +55,38 @@ defmodule AliceInGoals.BldgServerClient do
 
         {:error, "HTTP #{status}: #{inspect(body)}"}
 
-      {:error, exception} ->
-        Logger.error(
-          "Network error creating home_bldg for user #{user.id}: #{inspect(exception)}"
-        )
-
-        {:error, exception}
+      {:error, reason} ->
+        Logger.error("HTTP request failed for user #{user.id}: #{inspect(reason)}")
+        {:error, reason}
     end
   end
 
   @doc """
-  Creates a resident record for the user on bldg-server.
-
-  POST /v1/residents
+  Creates a resident profile for the user on the bldg-server.
   """
-  def create_resident(user, home_bldg_address) do
+  def create_resident(user, home_bldg) do
     username = generate_username(user)
 
     payload = %{
       "alias" => username,
-      "direction" => 0,
+      "direction" => "N",
       "email" => user.email,
-      "flr" => "#{home_bldg_address}/l0",
-      "home_bldg" => home_bldg_address,
-      "location" => "g/#{username}/l0/b(0,0)",
-      "name" => user.name || user.email,
+      "flr" => home_bldg["flr"],
+      "home_bldg" => home_bldg["address"],
+      "location" => home_bldg["address"],
+      "name" => user.name || username,
       "x" => 0,
       "y" => 0,
-      "flr_url" => "g/#{username}/l0",
-      "nesting_depth" => 1
+      "flr_url" => home_bldg["flr_url"],
+      "nesting_depth" => 0
     }
 
-    Logger.debug("BldgServer create_resident payload: #{inspect(payload, pretty: true)}")
-    Logger.info("Creating resident for user #{user.id} in home_bldg: #{home_bldg_address}")
+    Logger.debug("BldgServer API Request - POST /v1/residents")
+    Logger.debug("Payload: #{inspect(payload, pretty: true)}")
 
     case Req.post("#{@base_url}/v1/residents", json: payload) do
-      {:ok, %{status: status, body: body}} when status in 200..299 ->
-        Logger.info("Successfully created resident for user #{user.id}: #{inspect(body)}")
+      {:ok, %{status: 200, body: body}} ->
+        Logger.debug("BldgServer API Response - Success: #{inspect(body, pretty: true)}")
         {:ok, body}
 
       {:ok, %{status: status, body: body}} ->
@@ -113,9 +96,9 @@ defmodule AliceInGoals.BldgServerClient do
 
         {:error, "HTTP #{status}: #{inspect(body)}"}
 
-      {:error, exception} ->
-        Logger.error("Network error creating resident for user #{user.id}: #{inspect(exception)}")
-        {:error, exception}
+      {:error, reason} ->
+        Logger.error("HTTP request failed for user #{user.id}: #{inspect(reason)}")
+        {:error, reason}
     end
   end
 
@@ -123,20 +106,20 @@ defmodule AliceInGoals.BldgServerClient do
   Generates a URL-safe username from the user's email or name.
   """
   def generate_username(user) do
-    # Try to use name first, fall back to email
     base =
       cond do
-        user.name && String.trim(user.name) != "" ->
+        user.name && user.name != "" ->
           user.name
 
-        true ->
-          # Extract username from email (before @)
+        user.email ->
           user.email
           |> String.split("@")
           |> List.first()
+
+        true ->
+          "user-#{user.id}"
       end
 
-    # Convert to lowercase, replace spaces/special chars with hyphens
     base
     |> String.downcase()
     |> String.replace(~r/[^a-z0-9]+/, "-")
