@@ -52,6 +52,7 @@ defmodule AliceInGoals.BldgServerClient do
       "picture_url" => user.avatar || ""
     }
 
+    Logger.debug("BldgServer create_home_bldg payload: #{inspect(payload, pretty: true)}")
     Logger.info("Creating home_bldg for user #{user.id} with username: #{username}")
 
     case Req.post("#{@base_url}/v1/bldgs/build", json: payload) do
@@ -97,6 +98,7 @@ defmodule AliceInGoals.BldgServerClient do
       "nesting_depth" => 1
     }
 
+    Logger.debug("BldgServer create_resident payload: #{inspect(payload, pretty: true)}")
     Logger.info("Creating resident for user #{user.id} in home_bldg: #{home_bldg_address}")
 
     case Req.post("#{@base_url}/v1/residents", json: payload) do
