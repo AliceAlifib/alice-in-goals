@@ -34,6 +34,7 @@ defmodule AliceInGoals.BldgServerClient do
         "name" => username,
         "entity_type" => "ground",
         "flr" => "g",
+        "address" => "g/b(#{:rand.uniform(100)},#{:rand.uniform(100)})",
         "flr_url" => "g",
         "state" => nil,
         "summary" => user.name || username,
