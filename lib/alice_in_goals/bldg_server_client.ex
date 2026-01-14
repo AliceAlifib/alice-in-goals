@@ -30,18 +30,20 @@ defmodule AliceInGoals.BldgServerClient do
     username = generate_username(user)
 
     payload = %{
-      "name" => username,
-      "entity_type" => "ground",
-      "flr" => "g",
-      "flr_url" => "g",
-      "state" => nil,
-      "summary" => user.name || username,
-      "web_url" => nil,
-      "picture_url" => nil,
-      "data" => "{\"flr_height\": \"1.08\", \"flr0_height\": \"0.01\"}",
-      "owners" => [user.email],
-      "bldg_url" => "g/#{username}",
-      "is_composite" => true
+      "entity" => %{
+        "name" => username,
+        "entity_type" => "ground",
+        "flr" => "g",
+        "flr_url" => "g",
+        "state" => nil,
+        "summary" => user.name || username,
+        "web_url" => nil,
+        "picture_url" => nil,
+        "data" => "{\"flr_height\": \"1.08\", \"flr0_height\": \"0.01\"}",
+        "owners" => [user.email],
+        "bldg_url" => "g/#{username}",
+        "is_composite" => true
+      }
     }
 
     Logger.debug("BldgServer API Request - POST /v1/bldgs/build")
