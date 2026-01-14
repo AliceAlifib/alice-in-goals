@@ -33,10 +33,11 @@ defmodule AliceInGoals.BldgServerClient do
       "name" => username,
       "entity_type" => "ground",
       "flr" => "g",
-      "state" => "approved",
+      "state" => nil,
       "summary" => user.name || username,
-      "web_url" => "https://alice-in-goals.app/#{username}",
-      "picture_url" => user.avatar || "",
+      "web_url" => nil,
+      "picture_url" => nil,
+      "data" => "{\"flr_height\": \"1.08\", \"flr0_height\": \"0.01\"}",
       "owners" => [user.email]
     }
 
