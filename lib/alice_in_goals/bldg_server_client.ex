@@ -102,6 +102,20 @@ defmodule AliceInGoals.BldgServerClient do
 
   # Helper function to generate a username
   defp generate_username(user) do
-    "user_#{user.id}"
+    cond do
+      user.name ->
+        user.name
+        |> String.downcase()
+        |> String.replace(~r/[^a-z0-9]+/, "-")
+        |> String.trim("-")
+
+      true ->
+        user.email
+        |> String.split("@")
+        |> List.first()
+        |> String.downcase()
+        |> String.replace(~r/[^a-z0-9]+/, "-")
+        |> String.trim("-")
+    end
   end
 end
