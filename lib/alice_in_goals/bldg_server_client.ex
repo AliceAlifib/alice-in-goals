@@ -29,13 +29,19 @@ defmodule AliceInGoals.BldgServerClient do
   def create_home_bldg(user) do
     username = generate_username(user)
 
+    # Generate random coordinates for building placement
+    x = :rand.uniform(100)
+    y = :rand.uniform(100)
+
     payload = %{
       "entity" => %{
         "name" => username,
         "entity_type" => "ground",
         "flr" => "g",
-        "address" => "g/b(#{:rand.uniform(100)},#{:rand.uniform(100)})",
+        "address" => "g/b(#{x},#{y})",
         "flr_url" => "g",
+        "x" => x,
+        "y" => y,
         "state" => nil,
         "summary" => user.name || username,
         "web_url" => nil,
