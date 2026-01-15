@@ -38,5 +38,86 @@ defmodule AliceInGoals.BldgServerClient do
         "summary" => user.name || username
       }
     }
+
+    Logger.info("Creating home building for user #{user.id} with payload: #{inspect(payload)}")
+
+    case Req.post("#{@base_url}/v1/bldgs/build", json: payload) do
+      {:ok, %{status: 200, body: body}} ->
+        Logger.info("Successfully created home building for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: 201, body: body}} ->
+        Logger.info("Successfully created home building for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: status, body: body}} ->
+        Logger.error(
+          "Failed to create home building for user #{user.id}. Status: #{status}, Body: #{inspect(body)}"
+        )
+
+        {:error, "BldgServer returned status #{status}: #{inspect(body)}"}
+
+      {:error, reason} ->
+        Logger.error("HTTP request failed for user #{user.id}: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
+  Creates a resident profile for the user on the bldg-server.
+  """
+  def create_resident(user, home_bldg) do
+    payload = %{
+      "resident" => %{
+        "email" => user.email,
+        "name" => user.name || generate_username(user),
+        "home_bldg_address" => home_bldg["address"]
+      }
+    }
+
+    Logger.info("Creating resident for user #{user.id} with payload: #{inspect(payload)}")
+
+    case Req.post("#{@base_url}/v1/residents", json: payload) do
+      {:ok, %{status: 200, body: body}} ->
+        Logger.info("Successfully created resident for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: 201, body: body}} ->
+        Logger.info("Successfully created resident for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: status, body: body}} ->
+        Logger.error(
+          "Failed to create resident for user #{user.id}. Status: #{status}, Body: #{inspect(body)}"
+        )
+
+        {:error, "BldgServer returned status #{status}: #{inspect(body)}"}
+
+      {:error, reason} ->
+        Logger.error("HTTP request failed for user #{user.id}: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
+  Generates a URL-safe username from the user's email or name.
+  """
+  def generate_username(user) do
+    base =
+      cond do
+        user.name && user.name != "" ->
+          user.name
+
+        user.email ->
+          user.email |> String.split("@") |> List.first()
+
+        true ->
+          "user-#{user.id}"
+      end
+
+    base
+    |> String.downcase()
+    |> String.replace(~r/[^a-z0-9]+/, "-")
+    |> String.trim("-")
   end
 end
