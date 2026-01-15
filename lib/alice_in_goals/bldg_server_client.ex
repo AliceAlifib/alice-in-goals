@@ -75,3 +75,33 @@ defmodule AliceInGoals.BldgServerClient do
         "home_bldg" => home_bldg["address"]
       }
     }
+
+    Logger.info("Creating resident for user #{user.id} with payload: #{inspect(payload)}")
+
+    case Req.post("#{@base_url}/v1/residents", json: payload) do
+      {:ok, %{status: 200, body: body}} ->
+        Logger.info("Successfully created resident for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: 201, body: body}} ->
+        Logger.info("Successfully created resident for user #{user.id}: #{inspect(body)}")
+        {:ok, body}
+
+      {:ok, %{status: status, body: body}} ->
+        Logger.error(
+          "Failed to create resident for user #{user.id}. Status: #{status}, Body: #{inspect(body)}"
+        )
+
+        {:error, "BldgServer returned status #{status}: #{inspect(body)}"}
+
+      {:error, reason} ->
+        Logger.error("HTTP request failed for user #{user.id}: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  # Helper function to generate a username
+  defp generate_username(user) do
+    "user_#{user.id}"
+  end
+end
