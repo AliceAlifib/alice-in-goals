@@ -72,7 +72,7 @@ defmodule AliceInGoals.BldgServerClient do
         "email" => user.email,
         "name" => user.name || generate_username(user),
         "alias" => generate_username(user),
-        "home_bldg" => home_bldg["address"]
+        "home_bldg" => home_bldg["data"]["address"]
       }
     }
 
