@@ -38,15 +38,5 @@ defmodule AliceInGoals.BldgServerClient do
         "summary" => user.name || username
       }
     }
-
-    username = generate_username(user)
-    payload = %{
-      "entity" => %{
-        "container_web_url" => "https://alicein.co",
-        "entity_type" => "ground",
-        "state" => "approved",
-        "name" => username,
-        "summary" => user.name || username
-      }
-    }
-
+  end
+end
