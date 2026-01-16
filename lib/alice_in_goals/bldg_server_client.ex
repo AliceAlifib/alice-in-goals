@@ -16,7 +16,8 @@ defmodule AliceInGoals.BldgServerClient do
     with {:ok, home_bldg} <- create_home_bldg(user),
          {:ok, resident} <-
            create_resident(user, home_bldg) do
-      {:ok, %{resident_id: resident["id"], home_bldg_address: home_bldg["data"]["address"]}}
+      {:ok,
+       %{resident_id: resident["data"]["id"], home_bldg_address: home_bldg["data"]["address"]}}
     else
       {:error, reason} ->
         Logger.error("Failed to provision user #{user.id} on bldg-server: #{inspect(reason)}")
