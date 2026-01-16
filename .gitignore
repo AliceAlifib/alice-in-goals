@@ -19,6 +19,9 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
+# Ignore compiled beam files
+*.beam
+
 # Temporary files, for example, from tests.
 /tmp/
 
@@ -35,3 +38,8 @@ phx_new_cache-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Secret configuration files
+/config/*.secret.exs
+
+# Elixir LS
+.elixir_ls/
