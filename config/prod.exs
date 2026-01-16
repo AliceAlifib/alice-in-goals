@@ -17,5 +17,16 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
+# Configure Ueberauth providers for compilation
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]}
+  ]
+
+# Use placeholder values during build, real values come from runtime env
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: System.get_env("GOOGLE_CLIENT_ID") || "build-placeholder-id",
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET") || "build-placeholder-secret"
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

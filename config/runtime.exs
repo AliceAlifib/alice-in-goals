@@ -14,16 +14,12 @@ if File.exists?(".env") do
   end
 end
 
-# Configure Ueberauth for Google OAuth
-config :ueberauth, Ueberauth,
-  providers: [
-    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]}
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: System.get_env("GOOGLE_CLIENT_ID"),
-  client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
-  redirect_uri: "http://localhost:4000/auth/google/callback"
+# Override with real secrets at runtime (if provided)
+if System.get_env("GOOGLE_CLIENT_ID") do
+  config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+    client_id: System.get_env("GOOGLE_CLIENT_ID"),
+    client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+end
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the

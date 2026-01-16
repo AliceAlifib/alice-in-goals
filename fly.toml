@@ -4,7 +4,7 @@
 #
 
 app = 'alice-in-goals'
-primary_region = 'fra'
+primary_region = 'sjc'
 kill_signal = 'SIGTERM'
 
 [build]
